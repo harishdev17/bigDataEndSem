@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Traffic Dashboard</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Auto refresh every 60 sec -->
+    <meta http-equiv="refresh" content="60">
+
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { padding: 15px; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+    </style>
+</head>
+<body>
+
+<h2>🚦 Traffic Dashboard</h2>
+
+<div class="grid">
+
+    <!-- Traffic Flow -->
+    <div class="card">
+        <h3>Traffic Flow Over Time</h3>
+        <canvas id="flowChart"></canvas>
+    </div>
+
+    <!-- Speed -->
+    <div class="card">
+        <h3>Speed Analysis</h3>
+        <canvas id="speedChart"></canvas>
+    </div>
+
+    <!-- Vehicle Count -->
+    <div class="card">
+        <h3>Vehicle Count by Location</h3>
+        <canvas id="vehicleChart"></canvas>
+    </div>
+
+    <!-- Congestion -->
+    <div class="card">
+        <h3>Congestion Distribution</h3>
+        <canvas id="congChart"></canvas>
+    </div>
+
+</div>
+
+<!-- Summary -->
+<div class="card">
+    <h3>Summary</h3>
+    <p>🚗 Avg Vehicles: {{ avg_vehicles }}</p>
+    <p>⚡ Avg Speed: {{ avg_speed }} km/h</p>
+    <p>📊 Total Records: {{ total_records }}</p>
+    <p>📍 Active Locations: {{ active_locations }}</p>
+</div>
+
+<script>
+window.onload = function() {
+
+    // Traffic Flow
+    new Chart(document.getElementById("flowChart"), {
+        type: "line",
+        data: {
+            labels: {{ flow_hours | tojson }},
+            datasets: [{
+                label: "Vehicles",
+                data: {{ flow_values | tojson }},
+                fill: true
+            }]
+        }
+    });
+
+    // Speed Analysis
+    new Chart(document.getElementById("speedChart"), {
+        type: "bar",
+        data: {
+            labels: {{ speed_hours | tojson }},
+            datasets: [{
+                label: "Avg Speed",
+                data: {{ speed_values | tojson }}
+            }]
+        }
+    });
+
+    // Vehicle Count
+    new Chart(document.getElementById("vehicleChart"), {
+        type: "bar",
+        data: {
+            labels: {{ locations | tojson }},
+            datasets: [{
+                label: "Vehicles",
+                data: {{ vehicle_counts | tojson }}
+            }]
+        }
+    });
+
+    // Congestion Distribution
+    new Chart(document.getElementById("congChart"), {
+        type: "pie",
+        data: {
+            labels: {{ cong_labels | tojson }},
+            datasets: [{
+                data: {{ cong_values | tojson }}
+            }]
+        }
+    });
+
+}
+</script>
+
+</body>
+</html>
